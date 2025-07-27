@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Network Catalyst: Conecta, Crea y Crece</title>
+  
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Fuentes: Playfair Display (Serif) & Inter (Sans-Serif) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- React y Babel -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; color: #1c1c1c; }
+    h1, h2, h3, h4, .font-serif { font-family: 'Playfair Display', serif; }
+    .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+    .fade-out { animation: fadeOut 0.4s ease-in forwards; }
+    .scale-in { animation: scaleIn 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
+    .scale-out { animation: scaleOut 0.4s cubic-bezier(0.755, 0.05, 0.855, 0.06) forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(10px); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    @keyframes scaleOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.9); } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    // =============== LABORATORIOS FUNCIONALES ===============
+    const PitchLab = () => {
+        const [pitch, setPitch] = useState({ role: '', client: '', result: '' });
+        const handleChange = (e) => setPitch({ ...pitch, [e.target.name]: e.target.value });
+        const fullPitch = `Soy ${pitch.role || '[tu rol]'} y ayudo a ${pitch.client || '[tu cliente ideal]'} a ${pitch.result || '[lograr un resultado]'}.`;
+        return (
+            <div className="p-6 h-full flex flex-col">
+                <h4 className="font-semibold text-center mb-4">Constructor de Elevator Pitch</h4>
+                <div className="space-y-3 text-sm">
+                    <input type="text" name="role" value={pitch.role} onChange={handleChange} placeholder="Tu Rol (ej. disenador de marcas)" className="w-full p-2 border rounded-md" />
+                    <input type="text" name="client" value={pitch.client} onChange={handleChange} placeholder="Tu Cliente Ideal (ej. marcas de moda)" className="w-full p-2 border rounded-md" />
+                    <input type="text" name="result" value={pitch.result} onChange={handleChange} placeholder="Resultado que generas (ej. conectar con la Gen Z)" className="w-full p-2 border rounded-md" />
+                </div>
+                <div className="mt-4 pt-4 border-t text-sm bg-gray-100 p-3 rounded-md flex-grow">
+                    <p className="font-semibold">Tu Pitch de 30 segundos:</p>
+                    <p className="mt-1 text-blue-600">{fullPitch}</p>
+                </div>
+            </div>
+        );
+    };
+
+    const ChannelsLab = () => {
+        const [niche, setNiche] = useState('');
+        const suggestions = {
+            'tech': ['LinkedIn', 'Twitter (X)', 'Polywork'],
+            'moda': ['Instagram', 'Behance', 'Pinterest'],
+            'gaming': ['Discord', 'Twitch', 'ArtStation']
+        };
+        return (
+            <div className="p-6 h-full flex flex-col">
+                <h4 className="font-semibold text-center mb-4">Selector de Canales</h4>
+                <p className="text-center text-sm mb-4">Elige tu nicho para ver plataformas recomendadas:</p>
+                <div className="flex justify-center gap-2 mb-4">
+                    <button onClick={() => setNiche('tech')} className={`px-3 py-1 text-sm rounded-full ${niche === 'tech' ? 'bg-black text-white' : 'bg-gray-200'}`}>Tech</button>
+                    <button onClick={() => setNiche('moda')} className={`px-3 py-1 text-sm rounded-full ${niche === 'moda' ? 'bg-black text-white' : 'bg-gray-200'}`}>Moda</button>
+                    <button onClick={() => setNiche('gaming')} className={`px-3 py-1 text-sm rounded-full ${niche === 'gaming' ? 'bg-black text-white' : 'bg-gray-200'}`}>Gaming</button>
+                </div>
+                <div className="mt-4 pt-4 border-t text-sm bg-gray-100 p-3 rounded-md flex-grow">
+                    <p className="font-semibold">Plataformas sugeridas:</p>
+                    {niche && suggestions[niche] ? (
+                        <ul className="list-disc list-inside mt-2">
+                            {suggestions[niche].map(s => <li key={s}>{s}</li>)}
+                        </ul>
+                    ) : <p className="text-gray-500 mt-2">Selecciona un nicho.</p>}
+                </div>
+            </div>
+        );
+    };
+
+    const MessageLab = () => {
+        const template = `Hola [Nombre],\n\nMi nombre es [Tu Nombre] y soy [Tu Rol]. Admiro mucho tu trabajo en [Empresa/Proyecto], especialmente [menciona algo especifico].\n\nMe encantaria conectar y aprender de tu experiencia. Estarias abierto/a a una breve charla de 15 minutos la proxima semana?\n\nGracias por tu tiempo,\n[Tu Nombre]`;
+        return (
+            <div className="p-6 h-full flex flex-col">
+                <h4 className="font-semibold text-center mb-4">Plantilla de Mensaje en Frio</h4>
+                <div className="text-sm flex-grow flex flex-col">
+                    <p className="mb-2">Usa esta plantilla como base para tus mensajes en LinkedIn:</p>
+                    <textarea value={template} readOnly className="w-full p-2 border rounded-md flex-grow bg-gray-50 text-gray-700"></textarea>
+                </div>
+            </div>
+        );
+    };
+
+    const CrmLab = () => {
+        const [contacts, setContacts] = useState([{ id: 1, name: '', company: '', lastContact: '' }]);
+        const addContact = () => setContacts([...contacts, { id: Date.now(), name: '', company: '', lastContact: '' }]);
+        const updateContact = (id, field, value) => {
+            setContacts(contacts.map(c => c.id === id ? { ...c, [field]: value } : c));
+        };
+        return (
+            <div className="p-6 h-full flex flex-col">
+                <h4 className="font-semibold text-center mb-4">CRM Simple</h4>
+                <div className="space-y-3 text-sm overflow-y-auto pr-2 flex-grow">
+                    {contacts.map(c => (
+                        <div key={c.id} className="p-2 border rounded-md bg-white">
+                            <input type="text" value={c.name} onChange={e => updateContact(c.id, 'name', e.target.value)} placeholder="Nombre del Contacto" className="w-full p-1 border-b" />
+                            <input type="text" value={c.company} onChange={e => updateContact(c.id, 'company', e.target.value)} placeholder="Empresa" className="w-full p-1 mt-1 border-b" />
+                            <input type="date" value={c.lastContact} onChange={e => updateContact(c.id, 'lastContact', e.target.value)} className="w-full p-1 mt-1" />
+                        </div>
+                    ))}
+                </div>
+                <button onClick={addContact} className="mt-4 text-sm font-semibold text-blue-600">+ Anadir contacto</button>
+            </div>
+        );
+    };
+
+    const OpportunityLab = () => {
+        const [opportunity, setOpportunity] = useState({ contact: '', type: 'job', status: 'identified' });
+        const handleChange = (e) => setOpportunity({ ...opportunity, [e.target.name]: e.target.value });
+        return (
+            <div className="p-6 h-full flex flex-col">
+                <h4 className="font-semibold text-center mb-4">Tracker de Oportunidades</h4>
+                <div className="space-y-3 text-sm">
+                    <input type="text" name="contact" value={opportunity.contact} onChange={handleChange} placeholder="Contacto Clave" className="w-full p-2 border rounded-md" />
+                    <select name="type" value={opportunity.type} onChange={handleChange} className="w-full p-2 border rounded-md bg-white">
+                        <option value="job">Oferta de Trabajo</option>
+                        <option value="freelance">Proyecto Freelance</option>
+                        <option value="collaboration">Colaboracion</option>
+                    </select>
+                     <select name="status" value={opportunity.status} onChange={handleChange} className="w-full p-2 border rounded-md bg-white">
+                        <option value="identified">Identificada</option>
+                        <option value="contacted">Contactado</option>
+                        <option value="proposal">Propuesta Enviada</option>
+                        <option value="closed">Cerrada</option>
+                    </select>
+                </div>
+                <div className="mt-4 pt-4 border-t text-sm bg-gray-100 p-3 rounded-md flex-grow">
+                    <p className="font-semibold">Siguiente Paso Sugerido:</p>
+                    <p className="mt-1 text-blue-600">
+                        {opportunity.status === 'identified' && `Investigar a ${opportunity.contact || 'este contacto'} y preparar un mensaje personalizado.`}
+                        {opportunity.status === 'contacted' && `Hacer seguimiento en 5 dias si no hay respuesta.`}
+                        {opportunity.status === 'proposal' && `Contactar para confirmar recepcion y preguntar por siguientes pasos.`}
+                        {opportunity.status === 'closed' && `Felicidades! Archivar y agradecer al contacto.`}
+                    </p>
+                </div>
+            </div>
+        );
+    };
+    
+    // =============== DATOS DE LA APLICACIÓN ===============
+    const modules = [
+      {
+        id: 'mentalidad',
+        icon: 'brain-circuit',
+        title: "Mentalidad y Fundamentos",
+        subtitle: "De pedir a ofrecer valor.",
+        description: "El networking efectivo no se trata de coleccionar contactos, sino de construir relaciones genuinas. El cambio de mentalidad fundamental es pasar de 'que puedo obtener?' a 'que puedo ofrecer?'.",
+        keyConcepts: ["Mentalidad de Abundancia", "Dar antes de Recibir", "Autenticidad", "Curiosidad Genuina"],
+        practice: {
+          deepDive: "La gente se siente atraida por la pasion y la autenticidad. No intentes ser alguien que no eres. El mejor networking ocurre cuando hablas de lo que genuinamente te interesa y escuchas con la intencion de aprender, no con la intencion de responder.",
+          exercise: "Haz una lista de 3 cosas que puedes ofrecer a tu red. No tiene que ser un servicio. Puede ser: compartir un articulo interesante, conectar a dos personas que se beneficiarian de conocerse, o dar feedback constructivo sobre un proyecto.",
+          Task: () => <textarea placeholder="1. Puedo compartir..." className="w-full h-24 p-2 border rounded-md text-sm bg-white"></textarea>
+        },
+        LabComponent: PitchLab
+      },
+      {
+        id: 'canales',
+        icon: 'network',
+        title: "Canales y Plataformas",
+        subtitle: "Donde encontrar a tu tribu.",
+        description: "Las oportunidades estan en todas partes, tanto online como offline. La clave es identificar donde pasan el tiempo las personas que quieres conocer y estar presente de forma activa y constructiva.",
+        keyConcepts: ["Eventos Presenciales", "Comunidades Online", "LinkedIn Estrategico", "Twitter (X) y Threads", "Eventos Virtuales"],
+        practice: {
+          deepDive: "No necesitas estar en todas partes. Es mejor ser un miembro activo y respetado en 2 o 3 comunidades clave que tener un perfil fantasma en 10 plataformas. Elige los canales que se alineen con tu personalidad y tu nicho.",
+          exercise: "Investiga y encuentra 2 comunidades online (ej. un grupo de Slack, un servidor de Discord, un foro) donde se reunan tus clientes o colegas ideales. Unete y, durante una semana, solo escucha y aprende la dinamica del grupo.",
+          Task: () => <p className="text-sm text-gray-600"><i>Busca en Google: "[Tu Nicho] + comunidad online" o "[Tu Nicho] + grupo de Slack".</i></p>
+        },
+        LabComponent: ChannelsLab
+      },
+      {
+        id: 'contacto',
+        icon: 'send',
+        title: "El Primer Contacto",
+        subtitle: "Como iniciar conversaciones.",
+        description: "Romper el hielo es la parte mas intimidante. El secreto es hacerlo personal, relevante y centrado en la otra persona, no en ti. Un buen primer contacto demuestra que has hecho tu tarea.",
+        keyConcepts: ["Mensajes en Frio Personalizados", "El 'Elevator Pitch'", "Preguntas Abiertas", "Lenguaje Corporal (en persona)"],
+        practice: {
+          deepDive: "El peor mensaje en frio es el generico. Nunca envies un 'Hola, me gustaria conectar'. Siempre incluye un 'porque'. Ejemplo: 'Hola [Nombre], vi tu charla sobre [Tema] y me encanto tu perspectiva sobre [Punto Especifico]. Me encantaria conectar para seguir tu trabajo.'",
+          exercise: "Encuentra a 3 personas en LinkedIn a las que admires. Investiga su trabajo reciente (un articulo, un proyecto, una charla) y escribe un borrador de mensaje personalizado para cada una, siguiendo la plantilla del laboratorio.",
+          Task: () => <p className="text-sm text-gray-600"><i>Usa el laboratorio de este modulo como guia para tu mensaje.</i></p>
+        },
+        LabComponent: MessageLab
+      },
+      {
+        id: 'mantenimiento',
+        icon: 'calendar-check',
+        title: "Mantenimiento de Relaciones",
+        subtitle: "El arte del seguimiento.",
+        description: "El networking no es un evento, es un proceso. La verdadera magia ocurre en el seguimiento. Mantener el contacto de forma regular y no transaccional es lo que convierte un contacto en una relacion profesional solida.",
+        keyConcepts: ["Seguimiento Post-Evento", "Aportar Valor Continuo", "Recordar Detalles Personales", "Sistemas de CRM Simples"],
+        practice: {
+          deepDive: "Un simple 'Hola, como estas?' no es suficiente. El mejor seguimiento es contextual y aporta valor. Ejemplo: 'Hola [Nombre], lei este articulo sobre [Tema de su interes] y me acorde de nuestra conversacion. Espero que te sea util!'. Demuestra que escuchaste y que piensas en ellos.",
+          exercise: "Crea una hoja de calculo simple (un CRM personal) con 5 personas de tu red. Anade columnas para: Nombre, Empresa, Ultimo Contacto, Tema de Interes. Programa un recordatorio para contactar a una de ellas esta semana con algo de valor.",
+          Task: () => <p className="text-sm text-gray-600"><i>Puedes usar Google Sheets, Notion o Airtable para esto.</i></p>
+        },
+        LabComponent: CrmLab
+      },
+      {
+        id: 'oportunidad',
+        icon: 'briefcase',
+        title: "De Contacto a Oportunidad",
+        subtitle: "Convierte conversaciones en colaboraciones.",
+        description: "Has hecho el contacto y has construido una relacion. Ahora, como pasas a la siguiente fase? Este modulo te enseña a identificar y actuar sobre las oportunidades sin romper la confianza.",
+        keyConcepts: ["Identificando Señales de Oportunidad", "El 'Pitch' Contextual", "Negociacion y Propuestas", "Manejo del Rechazo"],
+        practice: {
+          deepDive: "La mejor manera de pedir trabajo es no pedirlo directamente. En su lugar, pide consejo. Ejemplo: 'Hola [Nombre], valoro mucho tu opinion. Estoy explorando nuevas oportunidades en [tu area] y me encantaria escuchar tu perspectiva sobre mi portafolio. Tendrias 15 minutos para una llamada rapida?'. Esto abre la puerta de forma mucho mas natural.",
+          exercise: "Piensa en un contacto clave de tu red. Que problema o desafio podria tener su empresa que tu podrias resolver? Escribe un borrador de un 'pitch contextual' que ofrezca una solucion, no solo tus servicios.",
+          Task: () => <textarea placeholder="Hola [Nombre], vi que tu empresa esta lanzando [X]. Con mi experiencia en [Y], creo que podria ayudar a [resolver Z]..." className="w-full h-24 p-2 border rounded-md text-sm bg-white"></textarea>
+        },
+        LabComponent: OpportunityLab
+      }
+    ];
+
+    // =============== COMPONENTES ===============
+    const PracticeModal = ({ module, onClose }) => {
+        const [closing, setClosing] = useState(false);
+        const { practice } = module;
+        const PracticeTask = practice.Task;
+
+        const handleClose = () => {
+            setClosing(true);
+            setTimeout(onClose, 300);
+        };
+        
+        useEffect(() => {
+            const handleKeyDown = (e) => e.key === 'Escape' && handleClose();
+            window.addEventListener('keydown', handleKeyDown);
+            return () => window.removeEventListener('keydown', handleKeyDown);
+        }, []);
+
+        return (
+            <div onClick={handleClose} className={`fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 ${closing ? 'fade-out' : 'fade-in'}`}>
+                <div onClick={e => e.stopPropagation()} className={`bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col ${closing ? 'scale-out' : 'scale-in'}`}>
+                    <header className="p-6 flex justify-between items-center border-b border-gray-200">
+                        <div className="flex items-center">
+                            <i data-lucide={module.icon} className="w-7 h-7 mr-4 text-black"></i>
+                            <h3 className="text-2xl font-bold font-serif">{module.title}</h3>
+                        </div>
+                        <button onClick={handleClose} className="p-2 rounded-full text-gray-500 hover:bg-gray-100"><i data-lucide="x" className="w-6 h-6"></i></button>
+                    </header>
+                    <main className="p-6 overflow-y-auto">
+                        <div className="mb-6">
+                            <h4 className="font-semibold text-lg mb-2 text-gray-800">Analisis Profundo</h4>
+                            <p className="text-gray-600 leading-relaxed">{practice.deepDive}</p>
+                        </div>
+                        <div>
+                            <h4 className="font-semibold text-lg mb-2 text-gray-800">Ejercicio Practico</h4>
+                            <p className="text-gray-600 leading-relaxed mb-4">{practice.exercise}</p>
+                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                                <PracticeTask />
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        );
+    };
+
+    const BrandingProApp = () => {
+      const [currentModule, setCurrentModule] = useState(modules[0]);
+      const [isAnimating, setIsAnimating] = useState(false);
+      const [practiceModalModule, setPracticeModalModule] = useState(null);
+
+      const selectModule = (module) => {
+        if (module.id !== currentModule.id) {
+          setIsAnimating(true);
+          setTimeout(() => {
+            setCurrentModule(module);
+            setIsAnimating(false);
+          }, 300);
+        }
+      };
+
+      useEffect(() => {
+        lucide.createIcons();
+      }, [currentModule, practiceModalModule]);
+
+      const LabComponent = currentModule.LabComponent;
+
+      return (
+        <div className="min-h-screen bg-gray-50">
+          {practiceModalModule && <PracticeModal module={practiceModalModule} onClose={() => setPracticeModalModule(null)} />}
+          
+          <header className="fixed w-full top-0 bg-white/80 backdrop-blur-lg border-b border-gray-200 z-30">
+            <nav className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+              <h1 className="text-2xl font-bold font-serif">Network Catalyst</h1>
+              <div className="hidden md:flex items-center space-x-6">
+                <a href="#fundamentos" className="text-sm font-medium text-gray-600 hover:text-black">Fundamentos</a>
+                <a href="#estrategia" className="text-sm font-medium text-gray-600 hover:text-black">Estrategia</a>
+                <a href="#digital" className="text-sm font-medium text-gray-600 hover:text-black">Digital</a>
+                <a href="#eventos" className="text-sm font-medium text-gray-600 hover:text-black">Eventos</a>
+              </div>
+            </nav>
+          </header>
+
+          <main className="pt-24">
+            {/* Sección de Fundamentos (Interactiva) */}
+            <section id="fundamentos" className="py-20 px-6">
+              <div className="max-w-7xl mx-auto">
+                <div className="text-center max-w-3xl mx-auto mb-16">
+                    <h2 className="text-4xl md:text-5xl font-bold font-serif mb-4">Conecta, Crea y Crece</h2>
+                    <p className="text-lg text-gray-600">Una guia practica para construir una red de contactos profesional que impulse tu carrera y tus proyectos.</p>
+                </div>
+
+                <div className="flex flex-col md:flex-row gap-10 lg:gap-16">
+                  {/* Navegación de Módulos */}
+                  <div className="md:w-1/3">
+                    <div className="space-y-3 sticky top-24">
+                      {modules.map((module) => (
+                        <button 
+                          key={module.id} 
+                          onClick={() => selectModule(module)}
+                          className={`w-full p-4 border rounded-lg transition-all duration-300 text-left flex items-start gap-4 ${ currentModule.id === module.id ? 'bg-black text-white border-black shadow-lg' : 'bg-white hover:border-gray-400'}`}
+                        >
+                          <i data-lucide={module.icon} className="w-7 h-7 mt-1 flex-shrink-0"></i>
+                          <div>
+                            <span className="font-semibold text-lg">{module.title}</span>
+                            <p className={`text-sm transition-colors ${currentModule.id === module.id ? 'text-gray-300' : 'text-gray-500'}`}>{module.subtitle}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Contenido del Módulo */}
+                  <div className={`md:w-2/3 transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
+                    <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
+                        <h3 className="text-3xl font-bold font-serif mb-4">{currentModule.title}</h3>
+                        <p className="text-gray-700 mb-6 leading-relaxed">{currentModule.description}</p>
+                        
+                        <h4 className="font-semibold mb-3">Conceptos Clave:</h4>
+                        <div className="flex flex-wrap gap-2 mb-8">
+                            {currentModule.keyConcepts.map(concept => (
+                                <span key={concept} className="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1 rounded-full">{concept}</span>
+                            ))}
+                        </div>
+                        
+                        <div className="bg-gray-50 rounded-lg border border-gray-200 h-80">
+                            <LabComponent />
+                        </div>
+
+                        <button onClick={() => setPracticeModalModule(currentModule)} className="mt-6 w-full px-4 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-all text-sm font-semibold flex items-center justify-center gap-2">
+                            <span>Iniciar Practica del Modulo</span>
+                            <i data-lucide="arrow-right" className="w-4 h-4"></i>
+                        </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* SECCIÓN: ESTRATEGIA DE NETWORKING */}
+            <section id="estrategia" className="py-20 px-6 bg-white border-y border-gray-200">
+                <div className="max-w-4xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl font-bold font-serif mb-4">Tu Estrategia de Networking Personal</h2>
+                        <p className="text-lg text-gray-600">El networking sin un objetivo es solo socializar. Un profesional tiene un plan.</p>
+                    </div>
+                    <div className="space-y-8">
+                        <div className="p-8 bg-gray-50 border rounded-lg"><h4 className="font-semibold text-xl mb-2">1. Define tus Objetivos</h4><p className="text-gray-700">Que quieres lograr? Se especifico. No es "conseguir trabajo", es "conectar con 3 directores de arte de agencias de branding en los proximos 2 meses". Un objetivo claro guia tus acciones.</p></div>
+                        <div className="p-8 bg-gray-50 border rounded-lg"><h4 className="font-semibold text-xl mb-2">2. Mapea tu Red Actual</h4><p className="text-gray-700">Empieza con quien ya conoces. Haz una lista de ex-compañeros, profesores, amigos. Quien de ellos podria presentarte a alguien relevante para tu objetivo?</p></div>
+                        <div className="p-8 bg-gray-50 border rounded-lg"><h4 className="font-semibold text-xl mb-2">3. Identifica tus "Key Contacts"</h4><p className="text-gray-700">Crea una lista de 10-20 personas o roles clave que quieres conocer. Investiga donde estan activos (LinkedIn, eventos, etc.). Este es tu "mapa del tesoro".</p></div>
+                    </div>
+                </div>
+            </section>
+            
+            {/* SECCIÓN: NETWORKING DIGITAL */}
+            <section id="digital" className="py-20 px-6">
+                <div className="max-w-4xl mx-auto">
+                    <div className="text-center mb-12">
+                        <h2 className="text-4xl font-bold font-serif mb-4">Dominando el Networking Digital</h2>
+                        <p className="text-lg text-gray-600">Tu perfil online es tu embajador 24/7. Asegurate de que trabaje para ti.</p>
+                    </div>
+                    <div className="space-y-6">
+                        <div className="p-6 bg-white border rounded-lg"><h4 className="font-semibold text-lg mb-2">Optimiza tu LinkedIn para Atraer</h4><p className="text-sm text-gray-600">Tu titular no es tu cargo, es tu Propuesta de Valor. En lugar de "Diseñador Grafico", prueba "Diseñador de Marcas para el Sector Tecnologico | Ayudo a Startups a Lanzar con Impacto". Publica contenido de valor, no solo pidas conexiones.</p></div>
+                        <div className="p-6 bg-white border rounded-lg"><h4 className="font-semibold text-lg mb-2">Aporta Valor en Comunidades</h4><p className="text-sm text-gray-600">En grupos de Slack o Discord, no llegues pidiendo trabajo. Responde preguntas, ofrece feedback constructivo, comparte recursos utiles. Conviertete en un miembro valioso y las oportunidades llegaran a ti.</p></div>
+                    </div>
+                </div>
+            </section>
+
+            {/* SECCIÓN: NETWORKING EN EVENTOS */}
+            <section id="eventos" className="py-20 px-6 bg-white border-y border-gray-200">
+                <div className="max-w-4xl mx-auto">
+                    <div className="text-center mb-12">
+                        <h2 className="text-4xl font-bold font-serif mb-4">Networking en Eventos (Presenciales y Virtuales)</h2>
+                        <p className="text-lg text-gray-600">Los eventos son aceleradores de relaciones. Una buena preparacion marca la diferencia.</p>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-8 text-center">
+                        <div className="p-6"><i data-lucide="calendar-search" className="w-12 h-12 mx-auto text-blue-600 mb-4"></i><h4 className="font-semibold mb-2">Antes: Investiga</h4><p className="text-sm text-gray-600">Revisa la lista de asistentes y ponentes. Identifica a 3-5 personas clave con las que te gustaria hablar. Prepara una pregunta inteligente para cada uno.</p></div>
+                        <div className="p-6"><i data-lucide="message-circle" className="w-12 h-12 mx-auto text-blue-600 mb-4"></i><h4 className="font-semibold mb-2">Durante: Escucha</h4><p className="text-sm text-gray-600">Tu meta no es repartir tarjetas, es tener 2-3 conversaciones significativas. Haz preguntas abiertas y escucha. Es mas memorable ser un buen oyente que un buen hablador.</p></div>
+                        <div className="p-6"><i data-lucide="send" className="w-12 h-12 mx-auto text-blue-600 mb-4"></i><h4 className="font-semibold mb-2">Despues: Sigue</h4><p className="text-sm text-gray-600">En las siguientes 48 horas, envia un mensaje de seguimiento personalizado en LinkedIn. Menciona algo especifico de su conversacion para refrescar su memoria. "Hola [Nombre], fue un placer hablar contigo sobre [Tema] en [Evento]..."</p></div>
+                    </div>
+                </div>
+            </section>
+          </main>
+
+          <footer className="bg-white py-12 px-6 border-t border-gray-200 mt-20">
+            <div className="max-w-7xl mx-auto text-center">
+              <h4 className="text-2xl font-bold font-serif mb-2">Network Catalyst</h4>
+              <p className="text-gray-500 text-sm">Tu carrera es tan fuerte como tus relaciones.</p>
+            </div>
+          </footer>
+        </div>
+      );
+    };
+
+    // =============== RENDERIZAR LA APP ===============
+    ReactDOM.createRoot(document.getElementById('root')).render(<BrandingProApp />);
+  </script>
+</body>
+</html>
